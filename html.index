@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Puzzle Solver</title>
+<style>
+body { font-family: sans-serif; margin: 20px; }
+input { margin:5px; }
+pre { background:#eee; padding:10px; }
+</style>
+</head>
+
+<body>
+
+<h2>Puzzle Solver</h2>
+
+Letters: <input id="letters"><br>
+Must contain: <input id="must"><br>
+Minimum length: <input id="min" type="number" value="4"><br>
+
+<button onclick="solve()">Solve</button>
+
+<pre id="result"></pre>
+
+<script>
+
+let woorden = [];
+
+fetch("woorden.txt")
+  .then(r => r.text())
+  .then(t => woorden = t.split("\n"));
+
+function solve() {
+
+    let letters = document.getElementById("letters").value;
+    let must = document.getElementById("must").value;
+    let min = parseInt(document.getElementById("min").value);
+
+    let allowed = new RegExp("^[" + letters + "]*" + must + "[" + letters + "]*$");
+
+    let results = woorden
+        .filter(w => allowed.test(w))
+        .filter(w => w.length >= min);
+
+    results = [...new Set(results)];
+
+    results.sort((a,b) => a.length - b.length || a.localeCompare(b));
+
+    document.getElementById("result").textContent = results.join("\n");
+}
+
+</script>
+
+</body>
+</html>
