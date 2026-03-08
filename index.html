@@ -93,8 +93,26 @@ function solve(){
 
     results.sort((a,b)=>a.length-b.length||a.localeCompare(b));
 
+    // statistieken maken
+    let stats={};
+
+    results.forEach(w=>{
+        let l=w.length;
+        stats[l]=(stats[l]||0)+1;
+    });
+
+    let statText="<b>Statistiek</b><br>";
+
+    Object.keys(stats)
+        .sort((a,b)=>a-b)
+        .forEach(l=>{
+            statText+=l+" letters: "+stats[l]+"<br>";
+        });
+
+    statText+="<br><b>Totaal: "+results.length+" woorden</b><br><br>";
+
     document.getElementById("result").innerHTML=
-        results.join("<br>");
+        statText + results.join("<br>");
 }
 
 </script>
