@@ -4,20 +4,51 @@
 <meta charset="UTF-8">
 <title>Puzzle Solver</title>
 
-<style>
-body {
-    font-family: sans-serif;
-    margin: 30px;
-}
-input {
-    margin: 5px;
-}
-pre {
-    background: #eee;
-    padding: 10px;
-}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
+<style>
+
+body{
+    font-family: sans-serif;
+    margin:15px;
+    font-size:18px;
+}
+
+h2{
+    text-align:center;
+}
+
+input{
+    font-size:20px;
+    padding:8px;
+    margin:5px 0;
+    width:100%;
+    box-sizing:border-box;
+}
+
+button{
+    font-size:20px;
+    padding:10px;
+    width:100%;
+    margin-top:10px;
+}
+
+#result{
+    margin-top:20px;
+    column-count:3;
+    column-gap:20px;
+    font-family:monospace;
+    font-size:18px;
+}
+
+@media (max-width:600px){
+    #result{
+        column-count:2;
+        font-size:20px;
+    }
+}
+
+</style>
 </head>
 
 <body>
@@ -25,46 +56,45 @@ pre {
 <h2>Puzzle Solver</h2>
 
 Letters:
-<input id="letters"><br>
+<input id="letters">
 
 Must contain:
-<input id="must"><br>
+<input id="must">
 
 Minimum length:
-<input id="min" type="number" value="4"><br>
+<input id="min" type="number" value="4">
 
 <button onclick="solve()">Solve</button>
 
-<pre id="result"></pre>
+<div id="result"></div>
 
 <script>
 
-let words = [];
+let words=[];
 
 fetch("woorden.txt")
-.then(r => r.text())
-.then(t => words = t.split("\n"));
+.then(r=>r.text())
+.then(t=>words=t.split("\n"));
 
 function solve(){
 
-    let letters = document.getElementById("letters").value;
-    let must = document.getElementById("must").value;
-    let min = parseInt(document.getElementById("min").value);
+    let letters=document.getElementById("letters").value.toLowerCase();
+    let must=document.getElementById("must").value.toLowerCase();
+    let min=parseInt(document.getElementById("min").value);
 
-    let regex = new RegExp("^[" + letters + "]*" + must + "[" + letters + "]*$");
+    let regex=new RegExp("^["+letters+"]*"+must+"["+letters+"]*$");
 
-    let results = words
-        .filter(w => regex.test(w))
-        .filter(w => w.length >= min);
+    let results=words
+        .map(w=>w.trim().toLowerCase())
+        .filter(w=>regex.test(w))
+        .filter(w=>w.length>=min);
 
-    results = [...new Set(results)];
+    results=[...new Set(results)];
 
-    results.sort((a,b) =>
-        a.length - b.length || a.localeCompare(b)
-    );
+    results.sort((a,b)=>a.length-b.length||a.localeCompare(b));
 
-    document.getElementById("result").textContent =
-        results.join("\n");
+    document.getElementById("result").innerHTML=
+        results.join("<br>");
 }
 
 </script>
